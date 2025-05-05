@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Display steps with professional animation
+    // Display steps with professional animation and consistent 1.5s delay between steps
     function displayStepsSequentially(steps) {
         if (!steps || !steps.length) return;
         
@@ -179,17 +179,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const stepsContainer = resultSteps.querySelector('.steps-container');
+        stepsContainer.innerHTML = ''; // Clear any existing steps
         
-        // Progressive delay for each step
-        const baseDelay = 800;
-        const incrementalDelay = 200;
+        // Fixed 1.5 second delay between steps (1000ms) as requested
+        const stepDelay = 1000; 
         
+        // Add a "typing" indicator that moves between agents
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+        stepsContainer.appendChild(typingIndicator);
+        
+        // Process each step with the exact 1.5 second delay
         steps.forEach((step, index) => {
-            const delay = baseDelay + (index * incrementalDelay);
-            
             setTimeout(() => {
+                // Remove typing indicator from previous position
+                if (typingIndicator.parentNode) {
+                    typingIndicator.parentNode.removeChild(typingIndicator);
+                }
+                
+                // Create the step element
                 const stepEl = document.createElement('div');
                 stepEl.className = 'step-item';
+                stepEl.style.opacity = '0';
+                stepEl.style.transform = 'translateY(20px)';
                 
                 // Determine agent icon
                 let agentIcon = '🤖';
@@ -218,17 +231,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 stepsContainer.appendChild(stepEl);
                 
-                // Scroll to the new step with animation
+                // Add appearing animation with subtle bounce
+                setTimeout(() => {
+                    stepEl.style.transition = 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.0)';
+                    stepEl.style.opacity = '1';
+                    stepEl.style.transform = 'translateY(0)';
+                }, 50);
+                
+                // Scroll the new step into view with smooth animation
                 stepEl.scrollIntoView({ behavior: 'smooth', block: 'end' });
                 
-                // Add sound effect for each step (optional)
-                playStepSound(index);
-                
-            }, delay);
+                // Add the typing indicator for the next step (if not the last step)
+                if (index < steps.length - 1) {
+                    stepsContainer.appendChild(typingIndicator);
+                }
+            }, index * stepDelay); // Exactly 1.5 seconds (1000) between each step
         });
     }
     
-    // Optional: Sound effects for steps
+    // Optional: Sound effects for steps (can be implemented later)
     function playStepSound(stepIndex) {
         // This could be implemented with subtle UI sounds
         // Left as a placeholder for potential future enhancement
