@@ -1,31 +1,60 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Metro Disruption Response</title>
-  <link rel="stylesheet" href="/static/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Disruption Response System</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <!-- Add this for immediate testing -->
+    <script>
+        console.log("HTML page loaded");
+        window.onload = function() {
+            console.log("Window fully loaded");
+        };
+    </script>
 </head>
 <body>
-  <h1>🚇 Metro Breakdown Response</h1>
+    <header>
+        <h1>Metro Disruption Response System</h1>
+        <p>Powered by AutoGen v0.5.6 Multi-Agent Orchestration</p>
+    </header>
+    
+    <main>
+        <section class="input-section">
+            <h2>Report a Disruption</h2>
+            <form id="incident-form"> <!-- Make sure form has this ID -->
+                <div class="input-container">
+                    <textarea id="incident-input" placeholder="Example: Train breakdown at Redhill Station" rows="3"></textarea>
+                    <button id="submit-btn" type="button">Process Incident</button>
+                    
+                    <!-- Add test button for direct debugging -->
+                    <button type="button" onclick="console.log('Test clicked'); alert('Test button works');">Test JS</button>
+                </div>
+            </form>
+        </section>
+        
+        <section id="result-section" class="results-section" style="display:none;"> <!-- Add style="display:none;" -->
+            <h2>Incident Response Timeline</h2>
+            <div id="result-steps" class="timeline-container"></div>
+        </section>
 
-  <!-- Form for entering the incident description -->
-  <form id="incident-form">
-    <label for="incident-input">Incident Description:</label>
-    <textarea
-      id="incident-input"
-      rows="3"
-      placeholder="e.g., Train breakdown at Redhill Station"
-      required
-    ></textarea>
-    <button type="submit">Start Response</button>
-  </form>
-
-  <!-- Section to display agent messages -->
-  <div id="result-section" style="display: none;">
-    <h2>🧠 Agent Responses</h2>
-    <div id="result-steps"></div>
-  </div>
-
-  <script src="/static/main.js"></script>
+        <!-- Add a direct test for your debug function -->
+        <button onclick="window.testUI()">Run Debug Test</button>
+    </main>
+    
+    <footer>
+        <p>© 2025 Metro Authority - AI Incident Response System</p>
+    </footer>
+    
+    <!-- Make sure this path is correct -->
+    <script src="/static/main.js"></script>
+    
+    <!-- Add inline script for testing -->
+    <script>
+        console.log("Bottom of page reached");
+        console.log("Submit button:", document.getElementById('submit-btn'));
+        console.log("Form:", document.getElementById('incident-form'));
+    </script>
 </body>
 </html>

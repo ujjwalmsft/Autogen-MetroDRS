@@ -50,7 +50,7 @@ def create_incident_resolution_agent(llm_config=None):
     # Create a model client using the Azure configuration
     from autogen_ext.models.azure import AzureAIChatCompletionClient
     from azure.core.credentials import AzureKeyCredential
-    
+    print(os.getenv('AZURE_OPENAI_ENDPOINT'))
     model_client = AzureAIChatCompletionClient(
         endpoint=os.getenv('AZURE_OPENAI_ENDPOINT'),
         credential=AzureKeyCredential(os.getenv('AZURE_OPENAI_API_KEY')),

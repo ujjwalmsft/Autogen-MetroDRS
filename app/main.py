@@ -21,8 +21,8 @@ app = FastAPI(
 )
 
 # Set up Jinja2 templates and static assets
-templates = Jinja2Templates(directory="app/templates")
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Register the API router
 app.include_router(metro_task_router.router, prefix="/api/metro_task")
