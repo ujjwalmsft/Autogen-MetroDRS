@@ -1,0 +1,14 @@
+# requirements.txt for Metro Multi-Agent System (AutoGen v0.5.6)
+
+# Core AutoGen libraries
+autogen-core==0.5.6
+autogen-agentchat==0.5.6
+autogen-ext[openai]==0.5.6
+
+# FastAPI app and server
+fastapi
+uvicorn[standard]
+
+# Template rendering + .env config
+jinja2
+python-dotenv

@@ -1,0 +1,8 @@
+venv/
+.venv/
+metro
+.env
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Metro Disruption Response</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <h1>🚇 Metro Breakdown Response</h1>
+
+  <!-- Form for entering the incident description -->
+  <form id="incident-form">
+    <label for="incident-input">Incident Description:</label>
+    <textarea
+      id="incident-input"
+      rows="3"
+      placeholder="e.g., Train breakdown at Redhill Station"
+      required
+    ></textarea>
+    <button type="submit">Start Response</button>
+  </form>
+
+  <!-- Section to display agent messages -->
+  <div id="result-section" style="display: none;">
+    <h2>🧠 Agent Responses</h2>
+    <div id="result-steps"></div>
+  </div>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>
