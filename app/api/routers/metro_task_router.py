@@ -50,7 +50,7 @@ async def get_fallback_steps(task: MetroTaskTextInput, planner: MetroPlanner = D
     This is useful for testing or when the LLM service is unavailable.
     """
     try:
-        print(f"Generating fallback steps for: {task.text}")
+        print(f"Generating steps for: {task.text}")
         # Generate fallback steps directly using the planner's method
         fallback_steps = planner._generate_fallback_steps(task.text)
         

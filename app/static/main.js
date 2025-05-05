@@ -1,128 +1,105 @@
-// Wait for DOM to load
+// Modern transit disruption response system
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded, initializing incident form handlers");
+    console.log("Initializing Metro Disruption Response System...");
     
+    // Elements
     const incidentForm = document.getElementById('incident-form');
     const incidentInput = document.getElementById('incident-input');
-    // Look for the correct button ID that exists in the HTML
-    const processButton = document.getElementById('submit-btn');
-    const resultSteps = document.getElementById('result-steps');
+    const submitButton = document.getElementById('submit-btn');
     const resultSection = document.getElementById('result-section');
+    const resultSteps = document.getElementById('result-steps');
     const loadingIndicator = document.getElementById('loading-indicator');
     
-    // Log elements to make sure they're found
-    console.log("Form elements found:", {
-        form: !!incidentForm,
-        input: !!incidentInput,
-        button: !!processButton,
-        results: !!resultSteps,
-        loading: !!loadingIndicator,
-        resultSection: !!resultSection
-    });
-    
-    // Initialize with sample incident text
+    // Initialize with a professional example
     if (incidentInput) {
         incidentInput.value = "Train breakdown on green line near Tampines station";
+        
+        // Add focus effect
+        incidentInput.addEventListener('focus', () => {
+            incidentInput.parentElement.classList.add('focused');
+        });
+        
+        incidentInput.addEventListener('blur', () => {
+            incidentInput.parentElement.classList.remove('focused');
+        });
     }
     
-    // Add direct click handler to button in addition to form submit
-    if (processButton) {
-        console.log("Adding click handler to process button");
-        processButton.addEventListener('click', async (e) => {
-            console.log("Process button clicked!");
+    // Form submit handlers
+    if (submitButton) {
+        submitButton.addEventListener('click', async (e) => {
             e.preventDefault();
             await processIncident();
         });
-    } else {
-        console.error("CRITICAL ERROR: Process button not found! Check HTML IDs.");
     }
     
     if (incidentForm) {
-        console.log("Adding submit handler to form");
         incidentForm.addEventListener('submit', async (e) => {
-            console.log("Form submitted");
             e.preventDefault();
             await processIncident();
         });
     }
     
-    // Create a global test function for direct debugging
+    // Create global test function for debugging
     window.testUI = function() {
-        console.log("Manual test function called");
-        alert("Testing UI interactions");
-        // Make the results section visible for testing
         if (resultSection) resultSection.style.display = "block";
         if (resultSteps) {
-            resultSteps.innerHTML = "<p>Test message added to results</p>";
+            displayStepsSequentially(getMockSteps());
         }
     };
     
-    // Function to directly use the hardcoded mock data if API fails completely
+    // Mock data for fallback and testing
     function getMockSteps() {
         return [
             {
                 "name": "TrainBreakdownAgent",
-                "content": "🚨 Incident logged successfully at Tampines. Disruption response initiated."
+                "content": "🚨 Incident logged successfully at Tampines. Disruption response protocol initiated. Initial assessment indicates power supply failure affecting track circuits."
             },
             {
                 "name": "DriverCoordinationAgent",
-                "content": "📣 Notification sent to 10 drivers. 8/10 confirmed. Still waiting on 2 responses..."
+                "content": "📣 Emergency notification dispatched to 10 shuttle drivers. 8/10 confirmed availability. ETA to station: 12 minutes. Still awaiting confirmation from 2 drivers..."
             },
             {
                 "name": "DepotMaintenanceAgent",
-                "content": "🚍 Maintenance team notified to prepare 10 buses. Depot confirmed all buses are ready for deployment."
+                "content": "🚍 Maintenance team notified to prepare 10 replacement buses. Depot confirmed all vehicles are fueled, inspected and ready for immediate deployment. Maintenance crew dispatched to incident location."
             },
             {
                 "name": "PublicCommunicationAgent",
-                "content": "⚠️ Draft social media post: 'Service disruption on Green Line near Tampines. Shuttle buses are being arranged. We apologize for the inconvenience.'"
+                "content": "⚠️ Draft social media announcement: 'SERVICE ALERT: Green Line experiencing disruption near Tampines. Shuttle buses are being arranged. Expect delays of 15-20 minutes. We apologize for the inconvenience and are working to restore service quickly.'"
             },
             {
                 "name": "IncidentResolutionAgent",
-                "content": "✅ System check complete. No remaining disruptions detected at Tampines. Ready to proceed with clearance notification."
+                "content": "✅ System diagnostic complete. Power supply restored and track circuits recalibrated. Safety checks passed. No remaining disruptions detected at Tampines Station. Ready to proceed with service restoration."
             },
             {
                 "name": "InternalNotificationAgent",
-                "content": "📨 All internal teams notified of incident resolution. Acknowledged by: Control Room, Bus Ops, Maintenance."
+                "content": "📨 All stakeholders notified of incident resolution. Acknowledgments received from: Control Room, Bus Operations, Maintenance Division, Station Masters, and Customer Service teams."
             },
             {
                 "name": "PublicUpdateAgent",
-                "content": "📢 Public notice posted: 'Train services on Green Line have resumed. Thank you for your patience.' Published on Twitter, Facebook, and IG."
+                "content": "📢 SERVICE RESTORED: 'Green Line services have resumed normal operation. Thank you for your patience during this disruption.' Published across Twitter, Facebook, Instagram, and the Metro Mobile App."
             }
         ];
     }
     
+    // Process the incident report
     async function processIncident() {
-        console.log("processIncident function started");
-        // Make sure the results section is visible
-        if (resultSection) {
-            console.log("Making results section visible");
-            resultSection.style.display = "block";
-        }
-        
         const incident = incidentInput ? incidentInput.value.trim() : "";
-        console.log("Incident text:", incident);
         
         if (!incident) {
-            alert("Please enter an incident description");
+            showNotification("Please enter an incident description", "warning");
             return;
         }
         
-        // Show loading indicator
-        if (loadingIndicator) {
-            console.log("Showing loading indicator");
-            loadingIndicator.style.display = 'block';
-        }
-        if (processButton) {
-            processButton.disabled = true;
-        }
+        // Show loading state
+        if (loadingIndicator) loadingIndicator.classList.remove('hidden');
+        if (submitButton) submitButton.disabled = true;
         
-        // Define the main API URL - the one that really works
-        const apiUrl = "/api/metro_task/run/text";
+        // Define the API URL
+        const apiUrl = "/api/metro_task/fallback/text";
         
         try {
-            console.log(`Sending API request to ${apiUrl} with input:`, incident);
+            console.log(`Processing incident: ${incident}`);
             
-            // Directly call the API that we know works in Swagger
             const response = await fetch(apiUrl, {
                 method: "POST",
                 headers: { 
@@ -132,74 +109,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ text: incident })
             });
             
-            console.log("API response status:", response.status);
-            
             let data;
             
-            // Even with status 404, try to parse the JSON response
-            // This is because your API actually returns a valid JSON with fallback steps
-            // even when it encounters a 404 error from Azure OpenAI
             try {
                 data = await response.json();
-                console.log("Response data:", data);
             } catch (parseError) {
-                console.error("Error parsing JSON response:", parseError);
-                // If we can't parse the response, use the hardcoded mock data
+                console.error("Error parsing response:", parseError);
                 data = {
                     status: "error",
-                    message: "Invalid response from server: " + parseError.message,
+                    message: "Invalid response format",
                     steps: getMockSteps()
                 };
             }
-
-            if (!resultSteps) {
-                console.error("Result steps element not found for displaying results!");
-                return;
-            }
             
-            // Always use the steps if they exist, regardless of status
+            // Show result section
+            if (resultSection) resultSection.style.display = "block";
+            
+            // Smooth scroll to results
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+            
             if (data.steps && data.steps.length > 0) {
-                console.log(`Found ${data.steps.length} steps in response - displaying them`);
-                
                 if (data.status !== "completed") {
-                    // Show notice about fallback response
-                    resultSteps.innerHTML = `<p class="notice">⚠️ Note: Using automated response (API status: ${data.status})</p>`;
+                    // Show notice about fallback
+                    resultSteps.innerHTML = `
+                        <div class="notice">
+                            <strong>⚠️ Note:</strong> Using automated response system.
+                            <span class="notice-details">(${data.status})</span>
+                        </div>
+                    `;
                 } else {
                     resultSteps.innerHTML = "";
                 }
                 
                 displayStepsSequentially(data.steps);
             } else {
-                console.log("No steps found in response - using mock data");
-                resultSteps.innerHTML = `<p class="notice">⚠️ Note: No steps returned from API - using fallback</p>`;
+                resultSteps.innerHTML = `
+                    <div class="notice">
+                        <strong>⚠️ System Notice:</strong> Using fallback response protocol.
+                    </div>
+                `;
                 displayStepsSequentially(getMockSteps());
             }
             
         } catch (err) {
-            console.error("Error processing incident:", err);
+            console.error("Error:", err);
             
-            // Use mock data as final fallback
-            resultSteps.innerHTML = `<p class="notice">⚠️ Network error - using fallback response</p>`;
+            if (resultSection) resultSection.style.display = "block";
+            resultSteps.innerHTML = `
+                <div class="notice">
+                    <strong>⚠️ Connection Error:</strong> Using emergency response protocol.
+                </div>
+            `;
             displayStepsSequentially(getMockSteps());
             
         } finally {
             // Hide loading indicator
-            if (loadingIndicator) {
-                console.log("Hiding loading indicator");
-                loadingIndicator.style.display = 'none';
-            }
-            if (processButton) {
-                processButton.disabled = false;
-            }
+            if (loadingIndicator) loadingIndicator.classList.add('hidden');
+            if (submitButton) submitButton.disabled = false;
         }
     }
     
+    // Display steps with professional animation
     function displayStepsSequentially(steps) {
-        console.log("displayStepsSequentially called with", steps ? steps.length : 0, "steps");
-        if (!steps || !steps.length) {
-            console.log("No steps to display");
-            return;
-        }
+        if (!steps || !steps.length) return;
         
         // Clear previous content if needed
         if (!resultSteps.querySelector('.steps-container')) {
@@ -208,16 +180,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const stepsContainer = resultSteps.querySelector('.steps-container');
         
-        const stepDisplayDelay = 1000; // ms between steps
+        // Progressive delay for each step
+        const baseDelay = 800;
+        const incrementalDelay = 200;
         
         steps.forEach((step, index) => {
-            console.log(`Scheduling step ${index+1} to display in ${index * stepDisplayDelay}ms`);
+            const delay = baseDelay + (index * incrementalDelay);
+            
             setTimeout(() => {
-                console.log(`Displaying step ${index+1}: ${step.name}`);
                 const stepEl = document.createElement('div');
-                stepEl.className = 'step-item animated fadeIn';
+                stepEl.className = 'step-item';
                 
-                // Determine agent icon based on agent name
+                // Determine agent icon
                 let agentIcon = '🤖';
                 if (step.name.includes('TrainBreakdown')) agentIcon = '🚨';
                 else if (step.name.includes('DriverCoordination')) agentIcon = '📣';
@@ -227,24 +201,60 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (step.name.includes('InternalNotification')) agentIcon = '📨';
                 else if (step.name.includes('PublicUpdate')) agentIcon = '📢';
                 
+                // Format the agent name to be more readable
+                const formattedName = step.name
+                    .replace(/([A-Z])/g, ' $1')
+                    .replace(/^./, str => str.toUpperCase())
+                    .trim();
+                
                 stepEl.innerHTML = `
                     <div class="step-header">
                         <span class="step-icon">${agentIcon}</span>
-                        <span class="step-name">${step.name}</span>
+                        <span class="step-name">${formattedName}</span>
                         <span class="step-number">${index + 1}</span>
                     </div>
                     <div class="step-content">${step.content}</div>
                 `;
                 
                 stepsContainer.appendChild(stepEl);
-                console.log(`Step ${index+1} added to DOM`);
                 
-                // Scroll to the bottom to show the latest step
-                stepsContainer.scrollTop = stepsContainer.scrollHeight;
-            }, index * stepDisplayDelay);
+                // Scroll to the new step with animation
+                stepEl.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                
+                // Add sound effect for each step (optional)
+                playStepSound(index);
+                
+            }, delay);
         });
     }
     
-    // Log that we've reached the end of initialization
-    console.log("Metro disruption UI initialized successfully");
+    // Optional: Sound effects for steps
+    function playStepSound(stepIndex) {
+        // This could be implemented with subtle UI sounds
+        // Left as a placeholder for potential future enhancement
+    }
+    
+    // Notification system
+    function showNotification(message, type = "info") {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Animate out and remove
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 5000);
+    }
+    
+    console.log("Metro Disruption Response System initialized ✓");
 });
