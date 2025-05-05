@@ -6,7 +6,7 @@ from config.llm_config import get_llm_config
 import os
 
 # Import your client factory
-from agents.client import create_model_client_for_agent
+from .client import create_model_client_for_agent
 
 load_dotenv()
 # Define system behavior for the agent
